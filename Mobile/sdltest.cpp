@@ -227,7 +227,7 @@ void game_logic(){
 }
 
 void spawn_apple(){
-    apple_vec.push_back(new apple(apple_texture,std::rand()%150+50+offset_x,
+    apple_vec.push_back(new apple(apple_texture,std::rand()%145+50+offset_x,
                                   std::rand()%30+5+offset_y,3));
 }
 
@@ -290,7 +290,8 @@ int main(int argc, char* args[]){
 
             //for fps
             Uint32 start = 0;
-            int frame = 0;
+            int apple_counter = 0;
+            int apple_limit = 45;
 
             //Main loop
             while (is_running) {
@@ -304,10 +305,11 @@ int main(int argc, char* args[]){
 
                 game_logic();
 
-                frame++;
-                if(frame == 45){
+                apple_counter++;
+                if(apple_counter == apple_limit){
                     spawn_apple();
-                    frame = 0;
+                    apple_counter = 0;
+                    apple_limit = std::rand()%40+31; //spawn apples between 30-70 frames
                 }
 
                 SDL_RenderPresent(renderer);
