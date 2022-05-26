@@ -9,7 +9,7 @@
 class player
 {
     public:
-        player(SDL_Texture *texture);
+        player(SDL_Texture *texture,int x_offset, int y_offset);
         ~player();
 
         void show_player(SDL_Renderer *renderer);
@@ -37,3 +37,4 @@ class player
 };
 
 #endif // PLAYER_H
+

@@ -1,11 +1,11 @@
 #include "player.h"
 
-player::player(SDL_Texture *texture)
+player::player(SDL_Texture *texture, int x_offset, int y_offset)
 {
     player_texture = texture;
 
-    x_pos = 60;
-    y_pos = 120;
+    x_pos = 60+x_offset;
+    y_pos = 120+y_offset;
 
     x_vel = 3;
 
@@ -20,7 +20,7 @@ player::player(SDL_Texture *texture)
     player_rect.w = player_width;
     player_rect.h = player_height;
 
-    //6 individual images
+    //10 individual images
     for(int i=0; i<10; i++){
         clips[i].x = i*player_width;
         clips[i].y = 0;
@@ -94,5 +94,6 @@ void player::move_player_right(SDL_Renderer *renderer, int &frame){
 
     player_rect.x = x_pos;
 }
+
 
 

@@ -15,17 +15,19 @@
 
 //fps
 const int FRAMES_PER_SECOND = 30;
-int frame_counter = 0;
+int FRAME_COUNTER = 0;
+
 //For texture/window scaling
 int scale = 0;
-int screen_offset = 0;
+int offset_x = 0;
+int offset_y = 0;
+
+//Main loop flag
+bool is_running = true;
 
 //directions for player
 bool left = false;
 bool right = false;
-
-//Main loop flag
-bool is_running = true;
 
 player *player1 = NULL;
 std::vector<apple*> apple_vec;
@@ -78,13 +80,11 @@ bool init(){
 
         //Get device display mode
         SDL_DisplayMode dispMode;
+
         if(SDL_GetCurrentDisplayMode(0,&dispMode) == 0){
             //screenRect.w = dispMode.w;
             //screenRect.h = dispMode.h;
         }
-
-        //Calculate scale depending on phone resolution
-        //float scale = dispMode.w / 256;
 
         //Create window
         window = SDL_CreateWindow("SDL_Test", SDL_WINDOWPOS_CENTERED,
@@ -102,8 +102,24 @@ bool init(){
             }
         }
 
-        SDL_SetWindowSize(window,dispMode.w,dispMode.h);
-        SDL_RenderSetScale(renderer,5,5);
+
+        //Scale assets depending on device resolution, set offset values;
+        int scale = dispMode.w / 256;
+
+        offset_x = dispMode.w - scale*256;
+        SDL_Log("offset_x: %d\n", offset_x);
+        offset_x = offset_x/(scale*2);
+
+        offset_y = dispMode.h - scale*144;
+        SDL_Log("offset_y: %d\n", offset_y);
+        offset_y = offset_y/(scale*2);
+
+        screenRect.x = offset_x;
+        screenRect.y = offset_y;
+
+        //SDL_SetWindowSize(window,dispMode.w,dispMode.h);
+        //SDL_RenderSetSCALE(renderer,4,4);
+        SDL_RenderSetScale(renderer,scale,scale);
 
     }
 
@@ -171,10 +187,10 @@ bool check_collision(SDL_Rect *rect1, SDL_Rect *rect2){
 void game_logic(){
 
     //CHECK PLAYER BOUNDS
-    if(player1->get_rect()->x < 48)
-        player1->set_x_pos(48);
-    else if(player1->get_rect()->x > 160+48-player1->get_rect()->w)
-        player1->set_x_pos(160+48-player1->get_rect()->w);
+    if(player1->get_rect()->x < 48+offset_x)
+        player1->set_x_pos(48+offset_x);
+    else if(player1->get_rect()->x > 160+48+offset_x-player1->get_rect()->w)
+        player1->set_x_pos(160+48+offset_x-player1->get_rect()->w);
 
     //MOVE APPLEs
     if(apple_vec.size() > 0){
@@ -186,17 +202,18 @@ void game_logic(){
 
     //Move PLayer
     if(left == true){
-        player1->move_player_left(renderer,frame_counter);
-        frame_counter++;
+        player1->move_player_left(renderer,FRAME_COUNTER);
+        FRAME_COUNTER++;
     }else if(right == true){
-        player1->move_player_right(renderer,frame_counter);
-        frame_counter++;
+        player1->move_player_right(renderer,FRAME_COUNTER);
+        FRAME_COUNTER++;
     }else{
         player1->show_player(renderer);
+        FRAME_COUNTER = 0;
     }
 
-    if(frame_counter >= 16)
-        frame_counter = 0;
+    if(FRAME_COUNTER >= 16)
+        FRAME_COUNTER = 0;
 
     //CHECK APPLE PLAYER COLLISION
     if(apple_vec.size() > 0){
@@ -210,7 +227,8 @@ void game_logic(){
 }
 
 void spawn_apple(){
-    apple_vec.push_back(new apple(apple_texture,std::rand()%150+50,std::rand()%10+5,3));
+    apple_vec.push_back(new apple(apple_texture,std::rand()%150+50+offset_x,
+                                  std::rand()%30+5+offset_y,3));
 }
 
 void regulate_fps(Uint32 start){
@@ -252,6 +270,8 @@ void close_all(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_FreeSurface(bg_image);
+    SDL_FreeSurface(player_image);
+    SDL_FreeSurface(apple_image);
     SDL_DestroyTexture(bg_texture);
     
     SDL_Quit();
@@ -266,7 +286,7 @@ int main(int argc, char* args[]){
             SDL_Log("Failed to load media \n");
         } else {
 
-            player1 = new player(player_texture);
+            player1 = new player(player_texture,offset_x,offset_y);
 
             //for fps
             Uint32 start = 0;
@@ -285,11 +305,10 @@ int main(int argc, char* args[]){
                 game_logic();
 
                 frame++;
-                if(frame == 150){
+                if(frame == 45){
                     spawn_apple();
                     frame = 0;
                 }
-
 
                 SDL_RenderPresent(renderer);
                 regulate_fps(start);
