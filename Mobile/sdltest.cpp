@@ -258,8 +258,11 @@ void handle_events(){
                 break;
 
             case SDL_FINGERUP:
-                left = false;
-                right = false;
+                if(event.tfinger.x < 0.5)
+                    left = false;
+                else
+                    right = false;
+
                 break;
         }
     }
