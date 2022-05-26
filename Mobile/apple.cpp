@@ -41,19 +41,33 @@ SDL_Rect *apple::get_rect(){
 //Num 0 for apple, 1 for empty
 void apple::show_apple(SDL_Renderer *renderer){
 
-    if(frame >= 0 and frame < 15)
+    if(frame >= 0 and frame < 10)
         SDL_RenderCopy(renderer, apple_texture, &clips[0], &apple_rect);
-    else if(frame >= 15 and frame < 30)
+    else if(frame >= 10 and frame < 20)
         SDL_RenderCopy(renderer, apple_texture, &clips[1], &apple_rect);
-    else if(frame >= 30 and frame < 45)
+    else if(frame >= 20 and frame < 30)
         SDL_RenderCopy(renderer, apple_texture, &clips[0], &apple_rect);
-    else if(frame >= 45 and frame < 60)
+    else if(frame >= 30 and frame < 40)
         SDL_RenderCopy(renderer, apple_texture, &clips[1], &apple_rect);
-    else if(frame >= 60 and frame < 75)
+    else if(frame >= 40 and frame < 50)
         SDL_RenderCopy(renderer, apple_texture, &clips[0], &apple_rect);
-    else if(frame >= 75 and frame < 90)
+    else if(frame >= 50 and frame < 60)
         SDL_RenderCopy(renderer, apple_texture, &clips[1], &apple_rect);
-    else if(frame >= 90 and frame < 105)
+    else if(frame >= 60 and frame < 70)
+        SDL_RenderCopy(renderer, apple_texture, &clips[0], &apple_rect);
+    else if(frame >= 70 and frame < 80)
+        SDL_RenderCopy(renderer, apple_texture, &clips[1], &apple_rect);
+    else if(frame >= 80 and frame < 85)
+        SDL_RenderCopy(renderer, apple_texture, &clips[0], &apple_rect);
+    else if(frame >= 85 and frame < 90)
+        SDL_RenderCopy(renderer, apple_texture, &clips[1], &apple_rect);
+    else if(frame >= 90 and frame < 95)
+        SDL_RenderCopy(renderer, apple_texture, &clips[0], &apple_rect);
+    else if(frame >= 95 and frame < 100)
+        SDL_RenderCopy(renderer, apple_texture, &clips[1], &apple_rect);
+    else if(frame >= 100 and frame < 105)
+        SDL_RenderCopy(renderer, apple_texture, &clips[0], &apple_rect);
+    else if(frame >= 105 and frame < 110)
         SDL_RenderCopy(renderer, apple_texture, &clips[0], &apple_rect);
     else
         SDL_RenderCopy(renderer, apple_texture, &clips[0], &apple_rect);
@@ -63,7 +77,7 @@ void apple::show_apple(SDL_Renderer *renderer){
 
 void apple::move_apple(){
 
-    if(frame < 105){
+    if(frame < 110){
         //Do Nothing
     }
     else{
@@ -71,4 +85,5 @@ void apple::move_apple(){
         apple_rect.y = y_pos;
     }
 }
+
 
