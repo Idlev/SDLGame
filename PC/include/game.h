@@ -10,6 +10,7 @@
 
 #include "player.h"
 #include "apple.h"
+#include "music.h"
 
 class game
 {
@@ -58,6 +59,9 @@ class game
     SDL_Surface *player_image;
     SDL_Texture *player_texture;
 
+    //MUSIC
+    music *music1;
+
     //APPLES
     std::vector<apple*> apple_vec;
     SDL_Surface *apple_image;
@@ -66,3 +70,4 @@ class game
 };
 
 #endif // GAME_H
+

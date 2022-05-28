@@ -29,6 +29,7 @@ game::game()
     apple_texture = SDL_CreateTextureFromSurface(renderer, apple_image);
 
     player1 = new player(player_texture);
+    music1 = new music();
 }
 
 game::~game()
@@ -186,6 +187,7 @@ void game::game_logic(){
         for(unsigned int i=0; i<apple_vec.size(); i++){
             if(check_collision(player1->get_rect(),apple_vec[i]->get_rect())){
                 std::cout << "Caught an apple!" << std::endl;
+                music1->play_effect();
                 apple_vec.erase(apple_vec.begin()+i);
             }
 
@@ -196,9 +198,6 @@ void game::game_logic(){
             }
         }
     }
-
-
-
 }
 
 //DRAW BACKGROUND
@@ -217,6 +216,8 @@ void game::start(){
 
     int apple_counter = 0;
     int counter_limit = 45;
+
+    music1->play_music();
 
     //Main game loop
     while(is_running){
