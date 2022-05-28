@@ -71,6 +71,7 @@ bool game::check_collision(SDL_Rect *rect1, SDL_Rect *rect2){
     return 1;
 }
 
+
 //KEYBOARD EVENTS, MOVE PLAYER, SCALE WINDOW
 void game::handle_events(){
 
@@ -144,12 +145,10 @@ void game::handle_events(){
     }
 }
 
-//SPWAN APPLE, COORDS X:50-199, Y:5-14
+//SPWAN APPLE
 void game::spawn_apple(){
-    apple_vec.push_back(new apple(apple_texture,rand()%150+50,rand()%10+5,3));
+    apple_vec.push_back(new apple(apple_texture,rand()%145+50,rand()%30+5,3));
 }
-
-
 
 void game::game_logic(){
 
@@ -235,3 +234,4 @@ void game::start(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 }
+
