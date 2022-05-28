@@ -188,8 +188,17 @@ void game::game_logic(){
                 std::cout << "Caught an apple!" << std::endl;
                 apple_vec.erase(apple_vec.begin()+i);
             }
+
+            //CHECK LOSING CONDITION
+            if( apple_vec[i]->get_rect()->y > player1->get_rect()->y+player1->get_rect()->h){
+                std::cout << "Apple missed! Game over!" << std::endl;
+                is_running = false;
+            }
         }
     }
+
+
+
 }
 
 //DRAW BACKGROUND
@@ -207,7 +216,7 @@ void game::start(){
     srand(time(0));
 
     int apple_counter = 0;
-    int apple_limit = 45;
+    int counter_limit = 45;
 
     //Main game loop
     while(is_running){
@@ -220,12 +229,11 @@ void game::start(){
 
         game_logic();
 
-
         apple_counter++;
-        if(apple_counter == apple_limit){
+        if(apple_counter == counter_limit){
             spawn_apple();
             apple_counter = 0;
-            apple_limit = rand()%40+31; //spawn apple at 30-70 frames
+            counter_limit = rand()%40+31; //spawn apple at 30-70 frames
         }
 
         SDL_RenderPresent(renderer);
