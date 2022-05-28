@@ -205,7 +205,9 @@ void game::start(){
 
     Uint32 start;
     srand(time(0));
-    int frame = 0;
+
+    int apple_counter = 0;
+    int apple_limit = 45;
 
     //Main game loop
     while(is_running){
@@ -218,12 +220,12 @@ void game::start(){
 
         game_logic();
 
-        frame++;
 
-        if(frame == 200){
-            std::cout << "Spawned apple!" << std::endl;
+        apple_counter++;
+        if(apple_counter == apple_limit){
             spawn_apple();
-            frame = 0;
+            apple_counter = 0;
+            apple_limit = rand()%40+31; //spawn apple at 30-70 frames
         }
 
         SDL_RenderPresent(renderer);
