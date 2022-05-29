@@ -17,7 +17,6 @@ game::game()
     background_rect.h = SCREEN_HEIGHT;
 
     is_running = true;
-    frame_counter = 0;
     key_left = false;
     key_right = false;
 
@@ -148,7 +147,8 @@ void game::handle_events(){
 
 //SPWAN APPLE
 void game::spawn_apple(){
-    apple_vec.push_back(new apple(apple_texture,rand()%145+50,rand()%30+5,3));
+
+    apple_vec.push_back(new apple(apple_texture,rand()%145+50,rand()%35+5,3));
 }
 
 void game::game_logic(){
@@ -169,18 +169,12 @@ void game::game_logic(){
 
     //MOVE PLAYER
     if(key_left == true){
-        player1->move_player_left(renderer,frame_counter);
-        frame_counter++;
+        player1->move_player_left(renderer);
     }else if(key_right == true){
-        player1->move_player_right(renderer,frame_counter);
-        frame_counter++;
+        player1->move_player_right(renderer);
     }else{
         player1->show_player(renderer);
-        frame_counter = 0;
     }
-
-    if(frame_counter >= 16)
-        frame_counter = 0;
 
     //CHECK APPLE PLAYER COLLISION
     if(apple_vec.size() > 0){
@@ -234,7 +228,7 @@ void game::start(){
         if(apple_counter == counter_limit){
             spawn_apple();
             apple_counter = 0;
-            counter_limit = rand()%40+31; //spawn apple at 30-70 frames
+            counter_limit = rand()%45+26; //spawn apple at 30-70 frames
         }
 
         SDL_RenderPresent(renderer);
@@ -245,4 +239,5 @@ void game::start(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 }
+
 

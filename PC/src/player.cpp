@@ -14,6 +14,9 @@ player::player(SDL_Texture *texture)
     //0,1 LEFT,RIGHT
     face_dir = 1;
 
+    //animation frame
+    frame = 0;
+
     //PLAYER DIMENSIONS
     player_height = 20;
     player_width = 17;
@@ -23,7 +26,7 @@ player::player(SDL_Texture *texture)
     player_rect.w = player_width;
     player_rect.h = player_height;
 
-    //6 individual images
+    //10 individual images
     for(int i=0; i<10; i++){
         clips[i].x = i*player_width;
         clips[i].y = 0;
@@ -39,6 +42,8 @@ player::~player()
 
 //DRAW PLAYER
 void player::show_player(SDL_Renderer *renderer){
+
+    frame = 0;
 
     if(face_dir == 0) //LEFT
         SDL_RenderCopy(renderer, player_texture, &clips[5], &player_rect);
@@ -68,7 +73,7 @@ void player::set_x_pos(float pos){
 }
 
 //MOVE, ANIMATION OF PLAYER, LEFT
-void player::move_player_left(SDL_Renderer *renderer, int &frame){
+void player::move_player_left(SDL_Renderer *renderer){
     face_dir = 0;
     x_pos -= x_vel;
 
@@ -82,10 +87,14 @@ void player::move_player_left(SDL_Renderer *renderer, int &frame){
         SDL_RenderCopy(renderer, player_texture, &clips[9], &player_rect);
 
     player_rect.x = x_pos;
+
+    frame++;
+    if(frame >= 16)
+        frame = 0;
 }
 
 //MOVE, ANIMATION PLAYER RIGHT
-void player::move_player_right(SDL_Renderer *renderer, int &frame){
+void player::move_player_right(SDL_Renderer *renderer){
     face_dir = 1;
     x_pos += x_vel;
 
@@ -99,4 +108,8 @@ void player::move_player_right(SDL_Renderer *renderer, int &frame){
         SDL_RenderCopy(renderer, player_texture, &clips[4], &player_rect);
 
     player_rect.x = x_pos;
+
+    frame++;
+    if(frame >= 16)
+        frame = 0;
 }

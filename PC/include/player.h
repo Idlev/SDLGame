@@ -12,8 +12,8 @@ class player
         ~player();
 
         void show_player(SDL_Renderer *renderer);
-        void move_player_right(SDL_Renderer *renderer, int &frame);
-        void move_player_left(SDL_Renderer *renderer, int &frame);
+        void move_player_right(SDL_Renderer *renderer);
+        void move_player_left(SDL_Renderer *renderer);
         SDL_Rect *get_rect();
 
         float get_x_vel();
@@ -33,6 +33,8 @@ class player
         int player_height;
         int player_width;
         int face_dir;
+        int frame = 0;
 };
 
 #endif // PLAYER_H
+

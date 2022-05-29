@@ -24,7 +24,6 @@ class game
 
     //MAIN LOOP
     bool is_running;
-    int frame_counter;
 
     //BUTTONS PRESSES
     bool key_left;
