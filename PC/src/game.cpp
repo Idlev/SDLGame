@@ -26,6 +26,8 @@ game::game()
     player_texture = SDL_CreateTextureFromSurface(renderer, player_image);
     apple_image = load_image("apple6.png");
     apple_texture = SDL_CreateTextureFromSurface(renderer, apple_image);
+    apple_sp_image = load_image("applesp.png");
+    apple_sp_texture = SDL_CreateTextureFromSurface(renderer,apple_sp_image);
 
     player1 = new player(player_texture);
     music1 = new music();
@@ -36,6 +38,11 @@ game::~game()
     SDL_DestroyTexture(background_texture);
     SDL_DestroyTexture(player_texture);
     SDL_DestroyTexture(apple_texture);
+    SDL_DestroyTexture(apple_sp_texture);
+
+    SDL_FreeSurface(player_image);
+    SDL_FreeSurface(apple_image);
+    SDL_FreeSurface(apple_sp_image);
 }
 
 //IMAGE LOAD FUNCTION FOR PLAYER, BACKGROUND, APPLES
@@ -148,7 +155,12 @@ void game::handle_events(){
 //SPWAN APPLE
 void game::spawn_apple(){
 
-    apple_vec.push_back(new apple(apple_texture,rand()%145+50,rand()%35+5,3));
+    if(rand()%20 == 0){
+        apple_vec.push_back(new apple(apple_sp_texture,rand()%145+50,rand()%35+5,1,true));
+        apple_vec.push_back(new apple(apple_texture,rand()%145+50,rand()%35+5,3,false));
+    }else{
+        apple_vec.push_back(new apple(apple_texture,rand()%145+50,rand()%35+5,3,false));
+    }
 }
 
 void game::game_logic(){
@@ -187,8 +199,14 @@ void game::game_logic(){
 
             //CHECK LOSING CONDITION
             if( apple_vec[i]->get_rect()->y > player1->get_rect()->y+player1->get_rect()->h){
-                std::cout << "Apple missed! Game over!" << std::endl;
-                is_running = false;
+
+                std::cout << "Apple missed!" << std::endl;
+                if(apple_vec[i]->get_special()){
+                    std::cout << "It was special!" << std::endl;
+                }else{
+                    std::cout << "Game over!" << std::endl;
+                    is_running = false;
+                }
             }
         }
     }

@@ -6,13 +6,14 @@
 class apple
 {
     public:
-        apple(SDL_Texture *texture, float x_p, float y_p, int vel);
+        apple(SDL_Texture *texture, float x_p, float y_p, int vel, bool sp);
         ~apple();
 
         void show_apple(SDL_Renderer *renderer);
         void move_apple();
         float set_y_vel(float vel);
         SDL_Rect *get_rect();
+        bool get_special();
 
     private:
 
@@ -27,6 +28,8 @@ class apple
 
         int apple_size;
         int frame;
+        bool is_special;
 };
 
 #endif // APPLE_H
+

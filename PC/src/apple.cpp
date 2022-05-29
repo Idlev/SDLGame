@@ -1,6 +1,6 @@
 #include "apple.h"
 
-apple::apple(SDL_Texture *texture, float x_p, float y_p, int vel)
+apple::apple(SDL_Texture *texture, float x_p, float y_p, int vel, bool sp)
 {
     apple_texture = texture;
 
@@ -10,7 +10,7 @@ apple::apple(SDL_Texture *texture, float x_p, float y_p, int vel)
     //apple image w,h
     apple_size = 10;
 
-    //frame
+    //animation frame
     frame = 0;
 
     apple_rect.x = x_pos;
@@ -26,6 +26,7 @@ apple::apple(SDL_Texture *texture, float x_p, float y_p, int vel)
     }
 
     y_vel = vel;
+    is_special = sp;
 }
 
 apple::~apple()
@@ -36,6 +37,10 @@ apple::~apple()
 SDL_Rect *apple::get_rect(){
 
     return &apple_rect;
+}
+
+bool apple::get_special(){
+    return is_special;
 }
 
 //Num 0 for apple, 1 for empty

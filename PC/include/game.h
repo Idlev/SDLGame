@@ -64,7 +64,9 @@ class game
     //APPLES
     std::vector<apple*> apple_vec;
     SDL_Surface *apple_image;
+    SDL_Surface *apple_sp_image;
     SDL_Texture *apple_texture;
+    SDL_Texture *apple_sp_texture;
     void spawn_apple();
 };
 
