@@ -17,20 +17,53 @@ game::game()
     background_rect.h = SCREEN_HEIGHT;
 
     is_running = true;
+
+    apple_counter = 0;
+    counter_limit = 45;
+
+    //scale
+    scale_current = 1;
+
+    //player movement
     key_left = false;
     key_right = false;
+    mouse_click = false;
+
+    //mouse coordinates
+    mouse_x = 0;
+    mouse_y = 0;
 
     background_image = load_image("bg4.png");
     background_texture = SDL_CreateTextureFromSurface(renderer, background_image);
+    title_bg_image = load_image("title_bg.png");
+    title_bg_texture = SDL_CreateTextureFromSurface(renderer, title_bg_image);
+    menu_image = load_image("menu2.png");
+    menu_texture = SDL_CreateTextureFromSurface(renderer,menu_image);
+
+    menu_rect.x = (SCREEN_WIDTH-menu_image->w)/2;
+    menu_rect.y = (SCREEN_HEIGHT-menu_image->h)/2;
+    menu_rect.w = menu_image->w;
+    menu_rect.h = menu_image->h;
+
+    std::cout << menu_rect.x << std::endl;
+    std::cout << menu_rect.y << std::endl;
+    std::cout << menu_rect.w << std::endl;
+    std::cout << menu_rect.h << std::endl;
+
+
     player_image = load_image("PlayerFrames.png");
     player_texture = SDL_CreateTextureFromSurface(renderer, player_image);
+    lives_image = load_image("extralife.png");
+    lives_texture = SDL_CreateTextureFromSurface(renderer, lives_image);
+
     apple_image = load_image("apple6.png");
     apple_texture = SDL_CreateTextureFromSurface(renderer, apple_image);
     apple_sp_image = load_image("applesp.png");
     apple_sp_texture = SDL_CreateTextureFromSurface(renderer,apple_sp_image);
 
-    player1 = new player(player_texture);
+    player1 = new player(player_texture,lives_texture);
     music1 = new music();
+    mainmenu1 = new mainmenu(menu_texture,title_bg_texture);
 }
 
 game::~game()
@@ -39,10 +72,14 @@ game::~game()
     SDL_DestroyTexture(player_texture);
     SDL_DestroyTexture(apple_texture);
     SDL_DestroyTexture(apple_sp_texture);
+    SDL_DestroyTexture(title_bg_texture);
+    SDL_DestroyTexture(menu_texture);
 
     SDL_FreeSurface(player_image);
     SDL_FreeSurface(apple_image);
     SDL_FreeSurface(apple_sp_image);
+    SDL_FreeSurface(title_bg_image);
+    SDL_FreeSurface(menu_image);
 }
 
 //IMAGE LOAD FUNCTION FOR PLAYER, BACKGROUND, APPLES
@@ -88,6 +125,7 @@ void game::handle_events(){
 
         switch(event.type){
             case SDL_QUIT:
+                SDL_Quit();
                 is_running = false;
                 break;
 
@@ -95,13 +133,13 @@ void game::handle_events(){
                 switch(event.key.keysym.sym){
 
                     case SDLK_LEFT:
-                        std::cout << "moving left" << std::endl;
+                        //std::cout << "moving left" << std::endl;
                         key_left = true;
                         key_right = false;
                         break;
 
                     case SDLK_RIGHT:
-                        std::cout << "moving right" << std::endl;
+                        //std::cout << "moving right" << std::endl;
                         key_right = true;
                         key_left = false;
                         break;
@@ -109,27 +147,32 @@ void game::handle_events(){
                     case SDLK_1:
                         SDL_SetWindowSize(window,256,144);
                         SDL_RenderSetScale(renderer,1,1);
+                        scale_current = 1;
                         break;
 
                     case SDLK_2:
                         SDL_SetWindowSize(window,256*2,144*2);
                         SDL_RenderSetScale(renderer,2,2);
+                        scale_current = 2;
                         break;
 
                     case SDLK_3:
                         SDL_SetWindowSize(window,256*3,144*3);
                         SDL_RenderSetScale(renderer,3,3);
+                        scale_current = 3;
                         break;
 
                     case SDLK_4:
                         SDL_SetWindowSize(window,256*4,144*4);
                         SDL_RenderSetScale(renderer,4,4);
+                        scale_current = 4;
                         break;
 
                     default:
                         NULL;
                 }
-            break;
+
+                break;
 
             case SDL_KEYUP:
                 switch(event.key.keysym.sym){
@@ -146,8 +189,28 @@ void game::handle_events(){
 
                 default:
                     NULL;
-            }
-            break;
+                }
+
+                break;
+
+
+            case SDL_MOUSEBUTTONDOWN:
+                switch(event.button.button){
+
+                    case SDL_BUTTON_LEFT:
+                        if(!menu_stack.empty()){
+                            mouse_click = true;
+                            std::cout << "Mouse at x,y: " << mouse_x << "," << mouse_y << std::endl;
+                        }
+                        break;
+
+                }
+                break;
+
+            case SDL_MOUSEMOTION:
+                mouse_x = event.motion.x/scale_current;
+                mouse_y = event.motion.y/scale_current;
+                break;
         }
     }
 }
@@ -155,12 +218,13 @@ void game::handle_events(){
 //SPWAN APPLE
 void game::spawn_apple(){
 
-    if(rand()%20 == 0){
+    apple_vec.push_back(new apple(apple_texture,rand()%145+50,rand()%35+5,3,false));
+}
+
+void game::spawn_special(){
+
+    if(rand()%10 == 0)
         apple_vec.push_back(new apple(apple_sp_texture,rand()%145+50,rand()%35+5,1,true));
-        apple_vec.push_back(new apple(apple_texture,rand()%145+50,rand()%35+5,3,false));
-    }else{
-        apple_vec.push_back(new apple(apple_texture,rand()%145+50,rand()%35+5,3,false));
-    }
 }
 
 void game::game_logic(){
@@ -188,37 +252,99 @@ void game::game_logic(){
         player1->show_player(renderer);
     }
 
+    //SHOW LIVES
+    player1->show_lives(renderer);
+
     //CHECK APPLE PLAYER COLLISION
     if(apple_vec.size() > 0){
         for(unsigned int i=0; i<apple_vec.size(); i++){
             if(check_collision(player1->get_rect(),apple_vec[i]->get_rect())){
                 std::cout << "Caught an apple!" << std::endl;
+
+                if(apple_vec[i]->get_special()){
+                    std::cout << "SPECIAL CAUGHT" << std::endl;
+                    player1->gain_life();
+                    std::cout << "Curr lives: " << player1->get_lives() << std::endl;
+                }
+
                 music1->play_effect();
                 apple_vec.erase(apple_vec.begin()+i);
+
             }
 
-            //CHECK LOSING CONDITION
+        }
+
+    }
+
+    //CHECK APPLE BELOW PLAYER//LOSING LIFE
+    if(apple_vec.size() > 0){
+        for(unsigned int i=0; i<apple_vec.size(); i++){
             if( apple_vec[i]->get_rect()->y > player1->get_rect()->y+player1->get_rect()->h){
 
                 std::cout << "Apple missed!" << std::endl;
                 if(apple_vec[i]->get_special()){
                     std::cout << "It was special!" << std::endl;
                 }else{
+                    std::cout << "It was regular!" << std::endl;
+                    player1->lose_life();
+                }
+
+                apple_vec.erase(apple_vec.begin()+i);
+
+                if(player1->get_lives() == 0){
                     std::cout << "Game over!" << std::endl;
-                    is_running = false;
+                    //not_started = true;
+                    reset_game();
+                    menu_stack.push(mainmenu1);
                 }
             }
         }
     }
+
+    //SPAWN APPLES
+    apple_counter++;
+    if(apple_counter == counter_limit){
+        spawn_apple();
+        apple_counter = 0;
+        counter_limit = rand()%45+26; //spawn apple at 30-70 frames
+    }else if(apple_counter == 20){
+        spawn_special();
+    }
+
 }
 
 //DRAW BACKGROUND
 void game::show_background(){
 
-    //SDL_RenderCopy(renderer, background_texture, NULL, &background_rect);
-    SDL_RenderCopy(renderer, background_texture, NULL, NULL);
+    SDL_RenderCopy(renderer, background_texture, NULL, &background_rect);
 }
 
+void game::menu_system(Uint32 start){
+
+    start = SDL_GetTicks();
+
+    menu_stack.top()->show_menu(renderer);
+    if(mouse_click == true){
+        //std::cout << "mouse click registered" << std::endl;
+        menu_stack.top()->action(menu_stack,mouse_x,mouse_y);
+        mouse_click = false;
+    }
+    handle_events();
+    SDL_RenderPresent(renderer);
+
+    regulate_fps(start);
+}
+
+void game::reset_game(){
+
+    apple_vec.clear();
+
+    apple_counter = 0;
+    counter_limit = 45;
+
+    player1->set_x_pos(60);
+    player1->set_lives(1);
+}
 
 //Main game
 void game::start(){
@@ -226,31 +352,25 @@ void game::start(){
     Uint32 start;
     srand(time(0));
 
-    int apple_counter = 0;
-    int counter_limit = 45;
-
     music1->play_music();
+
+    menu_stack.push(mainmenu1);
 
     //Main game loop
     while(is_running){
 
-        start = SDL_GetTicks();
+        while(!menu_stack.empty()){
+            //title_menu(start);
+            menu_system(start);
 
-        handle_events();
-
-        show_background();
-
-        game_logic();
-
-        apple_counter++;
-        if(apple_counter == counter_limit){
-            spawn_apple();
-            apple_counter = 0;
-            counter_limit = rand()%45+26; //spawn apple at 30-70 frames
         }
 
-        SDL_RenderPresent(renderer);
+        start = SDL_GetTicks();
+        handle_events();
+        show_background();
+        game_logic();
 
+        SDL_RenderPresent(renderer);
         regulate_fps(start);
     }
 
