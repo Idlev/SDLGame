@@ -14,6 +14,7 @@
 #include "music.h"
 #include "menu.h"
 #include "mainmenu.h"
+#include "optionsmenu.h"
 
 class game
 {
@@ -49,23 +50,23 @@ class game
     //FPS
     static const int FRAMES_PER_SECOND = 30;
 
-    //TITLE MENU
-    SDL_Surface *title_bg_image;
-    SDL_Texture *title_bg_texture;
-    SDL_Surface *menu_image;
-    SDL_Texture *menu_texture;
-    SDL_Rect menu_rect;
-    void title_menu(Uint32 start);
-
-
-
     //BACKGROUND
     SDL_Surface *background_image;
     SDL_Texture *background_texture;
     SDL_Rect background_rect;
 
-    //MENU SYSYEM
+    //MENU SYSTEM
 
+    SDL_Surface *title_bg_image;
+    SDL_Texture *title_bg_texture;
+    SDL_Surface *menu_image;
+    SDL_Texture *menu_texture;
+    SDL_Surface *options_image;
+    SDL_Texture *options_texture;
+    SDL_Rect menu_rect;
+    void title_menu(Uint32 start);
+
+    optionsmenu *optionsmenu1;
     mainmenu *mainmenu1;
     std::stack<menu*> menu_stack;
     void menu_system(Uint32 start);
@@ -93,6 +94,8 @@ class game
 
     //MUSIC
     music *music1;
+    SDL_Surface *volume_image;
+    SDL_Texture *volume_texture;
 
     //APPLES
     std::vector<apple*> apple_vec;

@@ -39,17 +39,8 @@ game::game()
     title_bg_texture = SDL_CreateTextureFromSurface(renderer, title_bg_image);
     menu_image = load_image("menu2.png");
     menu_texture = SDL_CreateTextureFromSurface(renderer,menu_image);
-
-    menu_rect.x = (SCREEN_WIDTH-menu_image->w)/2;
-    menu_rect.y = (SCREEN_HEIGHT-menu_image->h)/2;
-    menu_rect.w = menu_image->w;
-    menu_rect.h = menu_image->h;
-
-    std::cout << menu_rect.x << std::endl;
-    std::cout << menu_rect.y << std::endl;
-    std::cout << menu_rect.w << std::endl;
-    std::cout << menu_rect.h << std::endl;
-
+    options_image = load_image("options.png");
+    options_texture = SDL_CreateTextureFromSurface(renderer,options_image);
 
     player_image = load_image("PlayerFrames.png");
     player_texture = SDL_CreateTextureFromSurface(renderer, player_image);
@@ -61,9 +52,13 @@ game::game()
     apple_sp_image = load_image("applesp.png");
     apple_sp_texture = SDL_CreateTextureFromSurface(renderer,apple_sp_image);
 
+    volume_image = load_image("volume.png");
+    volume_texture = SDL_CreateTextureFromSurface(renderer,volume_image);
+
     player1 = new player(player_texture,lives_texture);
     music1 = new music();
-    mainmenu1 = new mainmenu(menu_texture,title_bg_texture);
+    optionsmenu1 = new optionsmenu(options_texture,title_bg_texture,volume_texture,music1);
+    mainmenu1 = new mainmenu(menu_texture,title_bg_texture,optionsmenu1);
 }
 
 game::~game()
@@ -74,12 +69,14 @@ game::~game()
     SDL_DestroyTexture(apple_sp_texture);
     SDL_DestroyTexture(title_bg_texture);
     SDL_DestroyTexture(menu_texture);
+    SDL_DestroyTexture(volume_texture);
 
     SDL_FreeSurface(player_image);
     SDL_FreeSurface(apple_image);
     SDL_FreeSurface(apple_sp_image);
     SDL_FreeSurface(title_bg_image);
     SDL_FreeSurface(menu_image);
+    SDL_FreeSurface(volume_image);
 }
 
 //IMAGE LOAD FUNCTION FOR PLAYER, BACKGROUND, APPLES
@@ -178,12 +175,12 @@ void game::handle_events(){
                 switch(event.key.keysym.sym){
 
                 case SDLK_LEFT:
-                    std::cout << "stopped moving left" << std::endl;
+                    //std::cout << "stopped moving left" << std::endl;
                     key_left = false;
                     break;
 
                 case SDLK_RIGHT:
-                    std::cout << "stopped moving right" << std::endl;
+                    //std::cout << "stopped moving right" << std::endl;
                     key_right = false;
                     break;
 
