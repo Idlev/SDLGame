@@ -15,6 +15,15 @@ class music
         void play_music();
         void play_effect();
 
+        void lower_music();
+        void lower_effect();
+        void raise_music();
+        void raise_effect();
+
+        int level_music;
+        int level_effect;
+        float interval;
+
     private:
 
         Mix_Music *game_music;
