@@ -37,10 +37,12 @@ game::game()
     background_texture = SDL_CreateTextureFromSurface(renderer, background_image);
     title_bg_image = load_image("title_bg.png");
     title_bg_texture = SDL_CreateTextureFromSurface(renderer, title_bg_image);
-    menu_image = load_image("menu2.png");
+    menu_image = load_image("menu3.png");
     menu_texture = SDL_CreateTextureFromSurface(renderer,menu_image);
-    options_image = load_image("options.png");
+    options_image = load_image("options2.png");
     options_texture = SDL_CreateTextureFromSurface(renderer,options_image);
+    scoremenu_image = load_image("highscore2.png");
+    scoremenu_texture = SDL_CreateTextureFromSurface(renderer,scoremenu_image);
 
     player_image = load_image("PlayerFrames.png");
     player_texture = SDL_CreateTextureFromSurface(renderer, player_image);
@@ -55,10 +57,15 @@ game::game()
     volume_image = load_image("volume.png");
     volume_texture = SDL_CreateTextureFromSurface(renderer,volume_image);
 
+    //score_image = load_image("nums1.png");
+
+
+
     player1 = new player(player_texture,lives_texture);
     music1 = new music();
+    scoremenu1 = new scoremenu(scoremenu_texture,title_bg_texture);
     optionsmenu1 = new optionsmenu(options_texture,title_bg_texture,volume_texture,music1);
-    mainmenu1 = new mainmenu(menu_texture,title_bg_texture,optionsmenu1);
+    mainmenu1 = new mainmenu(menu_texture,title_bg_texture,optionsmenu1,scoremenu1);
 }
 
 game::~game()
@@ -122,8 +129,8 @@ void game::handle_events(){
 
         switch(event.type){
             case SDL_QUIT:
-                SDL_Quit();
                 is_running = false;
+                SDL_Quit();
                 break;
 
             case SDL_KEYDOWN:
@@ -374,5 +381,4 @@ void game::start(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 }
-
 

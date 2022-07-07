@@ -58,4 +58,3 @@ bool menu::check_cursor(int x, int y, SDL_Rect rect){
 
     return ans;
 }
-

@@ -15,6 +15,7 @@
 #include "menu.h"
 #include "mainmenu.h"
 #include "optionsmenu.h"
+#include "scoremenu.h"
 
 class game
 {
@@ -47,8 +48,19 @@ class game
     static const int SCREEN_WIDTH = 256;
     static const int SCREEN_HEIGHT = 144;
 
+    //SCORE
+    int score;
+    int highscore;
+    SDL_Surface *score_image;
+    SDL_Surface *highscore_image;
+    SDL_Rect score_rect;
+    SDL_Rect highscore_rect;
+    SDL_Texture *score_texture;
+    SDL_Texture *highscore_texture;
+
     //FPS
     static const int FRAMES_PER_SECOND = 30;
+    void regulate_fps(Uint32 start);
 
     //BACKGROUND
     SDL_Surface *background_image;
@@ -56,16 +68,18 @@ class game
     SDL_Rect background_rect;
 
     //MENU SYSTEM
-
     SDL_Surface *title_bg_image;
     SDL_Texture *title_bg_texture;
     SDL_Surface *menu_image;
     SDL_Texture *menu_texture;
     SDL_Surface *options_image;
     SDL_Texture *options_texture;
+    SDL_Surface *scoremenu_image;
+    SDL_Texture *scoremenu_texture;
     SDL_Rect menu_rect;
     void title_menu(Uint32 start);
 
+    scoremenu *scoremenu1;
     optionsmenu *optionsmenu1;
     mainmenu *mainmenu1;
     std::stack<menu*> menu_stack;
@@ -75,7 +89,6 @@ class game
     SDL_Surface *load_image(const char* filename);
     void handle_events();
     void show_background();
-    void regulate_fps(Uint32 start);
 
     //GAME
     int apple_counter;
@@ -109,4 +122,3 @@ class game
 };
 
 #endif // GAME_H
-
