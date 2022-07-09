@@ -13,7 +13,7 @@ class menu
         ~menu();
 
         void show_menu(SDL_Renderer *renderer);
-        virtual void action(std::stack<menu*> &stack_menu,int x, int y);
+        virtual int action(std::stack<menu*> &stack_menu,int x, int y);
         void push_menu(std::stack<menu*> &stack_menu, menu* m);
         void pop_menu(std::stack<menu*> &stack_menu);
         bool check_cursor(int x, int y, SDL_Rect rect);

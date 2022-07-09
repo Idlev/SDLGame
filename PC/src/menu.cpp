@@ -33,9 +33,13 @@ void menu::show_menu(SDL_Renderer *renderer){
 
 }
 
-void menu::action(std::stack<menu*> &stack_menu, int x, int y){
+int menu::action(std::stack<menu*> &stack_menu, int x, int y){
+
+    int ans = 1;
 
     std::cout << "actions here" << std::endl;
+
+    return ans;
 }
 
 void menu::push_menu(std::stack<menu*> &stack_menu, menu* m){
@@ -46,7 +50,6 @@ void menu::push_menu(std::stack<menu*> &stack_menu, menu* m){
 void menu::pop_menu(std::stack<menu*> &stack_menu){
 
     stack_menu.pop();
-
 }
 
 bool menu::check_cursor(int x, int y, SDL_Rect rect){

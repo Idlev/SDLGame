@@ -21,7 +21,35 @@ game::game()
     apple_counter = 0;
     counter_limit = 45;
 
-    //scale
+    //SCORE
+    score = 0;
+
+    //10 Numbers for both scores
+    for(int i=0; i<10; i++){
+
+        score_clips[i].x = i*SCORE_WIDTH;
+        score_clips[i].y = 0;
+        score_clips[i].w = SCORE_WIDTH;
+        score_clips[i].h = SCORE_HEIGHT;
+
+        highscore_clips[i].x = i*HIGHSCORE_WIDTH;
+        highscore_clips[i].y = 0;
+        highscore_clips[i].w = HIGHSCORE_WIDTH;
+        highscore_clips[i].h = HIGHSCORE_HEIGHT;
+    }
+
+    //4 Digits for score
+    for(int i=0; i<4; i++){
+
+        score_rects[i].x = 1+47 + i*5;
+        score_rects[i].y = 0;
+        score_rects[i].w = SCORE_WIDTH;
+        score_rects[i].h = SCORE_HEIGHT;
+
+        score_rects[i].x = score_rects[i].x+1;
+    }
+
+    //SCALE
     scale_current = 1;
 
     //player movement
@@ -57,8 +85,10 @@ game::game()
     volume_image = load_image("volume.png");
     volume_texture = SDL_CreateTextureFromSurface(renderer,volume_image);
 
-    //score_image = load_image("nums1.png");
-
+    score_image = load_image("nums.png");
+    highscore_image = load_image("numshigh.png");
+    score_texture = SDL_CreateTextureFromSurface(renderer,score_image);
+    highscore_texture = SDL_CreateTextureFromSurface(renderer,highscore_image);
 
 
     player1 = new player(player_texture,lives_texture);
@@ -77,6 +107,9 @@ game::~game()
     SDL_DestroyTexture(title_bg_texture);
     SDL_DestroyTexture(menu_texture);
     SDL_DestroyTexture(volume_texture);
+    SDL_DestroyTexture(score_texture);
+    SDL_DestroyTexture(highscore_texture);
+    SDL_DestroyTexture(scoremenu_texture);
 
     SDL_FreeSurface(player_image);
     SDL_FreeSurface(apple_image);
@@ -84,6 +117,10 @@ game::~game()
     SDL_FreeSurface(title_bg_image);
     SDL_FreeSurface(menu_image);
     SDL_FreeSurface(volume_image);
+    SDL_FreeSurface(score_image);
+    SDL_FreeSurface(highscore_image);
+    SDL_FreeSurface(scoremenu_image);
+
 }
 
 //IMAGE LOAD FUNCTION FOR PLAYER, BACKGROUND, APPLES
@@ -258,6 +295,7 @@ void game::game_logic(){
 
     //SHOW LIVES
     player1->show_lives(renderer);
+    show_score();
 
     //CHECK APPLE PLAYER COLLISION
     if(apple_vec.size() > 0){
@@ -269,6 +307,8 @@ void game::game_logic(){
                     std::cout << "SPECIAL CAUGHT" << std::endl;
                     player1->gain_life();
                     std::cout << "Curr lives: " << player1->get_lives() << std::endl;
+                }else{
+                    score++;
                 }
 
                 music1->play_effect();
@@ -323,6 +363,47 @@ void game::show_background(){
     SDL_RenderCopy(renderer, background_texture, NULL, &background_rect);
 }
 
+void game::show_score(){
+
+    std::string tmp = std::to_string(score);
+
+    for(int i=0; i<tmp.length(); i++){
+
+        if(tmp[i] == '0'){
+            SDL_RenderCopy(renderer, score_texture, &score_clips[0], &score_rects[i]);
+            continue;
+        }else if(tmp[i] == '1'){
+            SDL_RenderCopy(renderer, score_texture, &score_clips[1], &score_rects[i]);
+            continue;
+        }else if(tmp[i] == '2'){
+            SDL_RenderCopy(renderer, score_texture, &score_clips[2], &score_rects[i]);
+            continue;
+        }else if(tmp[i] == '3'){
+            SDL_RenderCopy(renderer, score_texture, &score_clips[3], &score_rects[i]);
+            continue;
+        }else if(tmp[i] == '4'){
+            SDL_RenderCopy(renderer, score_texture, &score_clips[4], &score_rects[i]);
+            continue;
+        }else if(tmp[i] == '5'){
+            SDL_RenderCopy(renderer, score_texture, &score_clips[5], &score_rects[i]);
+            continue;
+        }else if(tmp[i] == '6'){
+            SDL_RenderCopy(renderer, score_texture, &score_clips[6], &score_rects[i]);
+            continue;
+        }else if(tmp[i] == '7'){
+            SDL_RenderCopy(renderer, score_texture, &score_clips[7], &score_rects[i]);
+            continue;
+        }else if(tmp[i] == '8'){
+            SDL_RenderCopy(renderer, score_texture, &score_clips[8], &score_rects[i]);
+            continue;
+        }else if(tmp[i] == '9'){
+            SDL_RenderCopy(renderer, score_texture, &score_clips[9], &score_rects[i]);
+            continue;
+        }
+    }
+
+}
+
 void game::menu_system(Uint32 start){
 
     start = SDL_GetTicks();
@@ -330,9 +411,12 @@ void game::menu_system(Uint32 start){
     menu_stack.top()->show_menu(renderer);
     if(mouse_click == true){
         //std::cout << "mouse click registered" << std::endl;
-        menu_stack.top()->action(menu_stack,mouse_x,mouse_y);
+        if(menu_stack.top()->action(menu_stack,mouse_x,mouse_y) == 0)
+           is_running = false;
+
         mouse_click = false;
     }
+
     handle_events();
     SDL_RenderPresent(renderer);
 

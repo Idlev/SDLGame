@@ -36,7 +36,9 @@ void optionsmenu::show_menu(SDL_Renderer *renderer){
 
 }
 
-void optionsmenu::action(std::stack<menu*> &stack_menu, int x, int y){
+int optionsmenu::action(std::stack<menu*> &stack_menu, int x, int y){
+
+    int ans = 1;
 
     std::cout << "OPTIONSMENU ACTION:" << std::endl;
 
@@ -54,7 +56,5 @@ void optionsmenu::action(std::stack<menu*> &stack_menu, int x, int y){
         music1->lower_effect();
     }
 
-
-
+    return ans;
 }
-

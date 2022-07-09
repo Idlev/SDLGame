@@ -14,7 +14,7 @@ class optionsmenu : public menu
         ~optionsmenu();
 
         void show_menu(SDL_Renderer *renderer);
-        void action(std::stack<menu*> &stack_menu, int x, int y);
+        int action(std::stack<menu*> &stack_menu, int x, int y);
 
     private:
 
@@ -28,4 +28,3 @@ class optionsmenu : public menu
 };
 
 #endif // OPTIONSMENU_H
-

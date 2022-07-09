@@ -13,7 +13,7 @@ class scoremenu : public menu
         ~scoremenu();
 
         void show_menu(SDL_Renderer *renderer);
-        void action(std::stack<menu*> &stack_menu, int x, int y);
+        int action(std::stack<menu*> &stack_menu, int x, int y);
 
     private:
 

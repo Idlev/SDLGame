@@ -27,7 +27,6 @@ class game
 
     private:
 
-    //MAIN LOOP
     bool is_running;
 
     //BUTTONS PRESSES
@@ -53,10 +52,19 @@ class game
     int highscore;
     SDL_Surface *score_image;
     SDL_Surface *highscore_image;
-    SDL_Rect score_rect;
-    SDL_Rect highscore_rect;
+    SDL_Rect score_rects[4];
+    SDL_Rect highscore_rects[4];
     SDL_Texture *score_texture;
     SDL_Texture *highscore_texture;
+
+    void show_score();
+    SDL_Rect score_clips[10];
+    SDL_Rect highscore_clips[10];
+    static const int SCORE_WIDTH = 4;
+    static const int SCORE_HEIGHT = 5;
+
+    static const int HIGHSCORE_WIDTH = 12;
+    static const int HIGHSCORE_HEIGHT = 15;
 
     //FPS
     static const int FRAMES_PER_SECOND = 30;
