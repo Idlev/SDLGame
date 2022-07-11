@@ -12,7 +12,7 @@ class menu
         menu(SDL_Texture *menu_tex, SDL_Texture *bg_tex);
         ~menu();
 
-        void show_menu(SDL_Renderer *renderer);
+        virtual void show_menu(SDL_Renderer *renderer);
         virtual int action(std::stack<menu*> &stack_menu,int x, int y);
         void push_menu(std::stack<menu*> &stack_menu, menu* m);
         void pop_menu(std::stack<menu*> &stack_menu);

@@ -1,6 +1,6 @@
 #include "mainmenu.h"
 
-mainmenu::mainmenu(SDL_Texture *menu_tex, SDL_Texture *bg_tex, optionsmenu *options_m) : menu(menu_tex, bg_tex)
+mainmenu::mainmenu(SDL_Texture *menu_tex, SDL_Texture *bg_tex, optionsmenu *options_m, scoremenu *score_m) : menu(menu_tex, bg_tex)
 {
     rect_new_game.x = BLANK_X+30;
     rect_new_game.y = BLANK_Y+16;
@@ -12,7 +12,19 @@ mainmenu::mainmenu(SDL_Texture *menu_tex, SDL_Texture *bg_tex, optionsmenu *opti
     rect_options.w = 62;
     rect_options.h = 16;
 
+    rect_highscore.x = BLANK_X+30;
+    rect_highscore.y = BLANK_Y+58;
+    rect_highscore.w = 62;
+    rect_highscore.h = 16;
+
+    rect_exitgame.x = BLANK_X+30;
+    rect_exitgame.y = BLANK_Y+73;
+    rect_exitgame.w = 62;
+    rect_exitgame.h = 16;
+
     options = options_m;
+    score = score_m;
+
 }
 
 mainmenu::~mainmenu()
@@ -21,7 +33,9 @@ mainmenu::~mainmenu()
 }
 
 
-void mainmenu::action(std::stack<menu*> &stack_menu, int x, int y){
+int mainmenu::action(std::stack<menu*> &stack_menu, int x, int y){
+
+    int ans = 1;
 
     std::cout << "MAIN MENU ACTION" << std::endl;
 
@@ -37,8 +51,17 @@ void mainmenu::action(std::stack<menu*> &stack_menu, int x, int y){
         std::cout << "OPTIONS" << std::endl;
         push_menu(stack_menu, options);
 
+    }else if( check_cursor(x,y, rect_highscore)){
+
+        std::cout << "HIGHSCORE" << std::endl;
+        push_menu(stack_menu, score);
+
+    }else if( check_cursor(x,y, rect_exitgame)){
+
+        std::cout << "EXIT GAME" << std::endl;
+        ans = 0;
+        pop_menu(stack_menu);
     }
 
-
+    return ans;
 }
-

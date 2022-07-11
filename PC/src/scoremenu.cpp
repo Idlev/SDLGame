@@ -12,6 +12,8 @@ scoremenu::~scoremenu()
 
 void scoremenu::show_menu(SDL_Renderer *renderer){
 
+    SDL_RenderCopy(renderer, bg_texture, NULL, &bg_rect);
+    SDL_RenderCopy(renderer, menu_texture, NULL, &menu_rect);
 
 }
 

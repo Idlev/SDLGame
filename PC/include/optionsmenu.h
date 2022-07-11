@@ -18,10 +18,16 @@ class optionsmenu : public menu
 
     private:
 
+        static const int VOLUME_WIDTH = 2;
+        static const int VOLUME_HEIGHT = 4;
+
         SDL_Rect rect_effect_plus;
         SDL_Rect rect_effect_minus;
         SDL_Rect rect_music_plus;
         SDL_Rect rect_music_minus;
+
+        SDL_Rect music_clips[16];
+        SDL_Rect effect_clips[16];
 
         SDL_Texture *volume_texture;
         music *music1;

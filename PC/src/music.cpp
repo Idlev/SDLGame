@@ -2,8 +2,8 @@
 
 music::music()
 {
-    level_music = 64;
-    level_effect = 64;
+    level_music = 16;
+    level_effect = 16;
     interval = 8;
 
     //Open audio channels,freq,format,chunk size
@@ -40,6 +40,16 @@ void music::play_effect(){
 
     //Play effect once
     Mix_PlayChannel(1,effect_apple,0);
+}
+
+int music::get_music_vol(){
+
+    return level_music;
+}
+
+int music::get_effect_vol(){
+
+    return level_effect;
 }
 
 void music::raise_music(){
@@ -100,4 +110,3 @@ void music::lower_effect(){
     std::cout << "NOW AT: " << level_effect << std::endl;
 
 }
-

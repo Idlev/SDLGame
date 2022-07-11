@@ -67,7 +67,7 @@ game::game()
     title_bg_texture = SDL_CreateTextureFromSurface(renderer, title_bg_image);
     menu_image = load_image("menu3.png");
     menu_texture = SDL_CreateTextureFromSurface(renderer,menu_image);
-    options_image = load_image("options2.png");
+    options_image = load_image("options4.png");
     options_texture = SDL_CreateTextureFromSurface(renderer,options_image);
     scoremenu_image = load_image("highscore2.png");
     scoremenu_texture = SDL_CreateTextureFromSurface(renderer,scoremenu_image);
@@ -82,7 +82,7 @@ game::game()
     apple_sp_image = load_image("applesp.png");
     apple_sp_texture = SDL_CreateTextureFromSurface(renderer,apple_sp_image);
 
-    volume_image = load_image("volume.png");
+    volume_image = load_image("volume2.png");
     volume_texture = SDL_CreateTextureFromSurface(renderer,volume_image);
 
     score_image = load_image("nums.png");
@@ -262,9 +262,10 @@ void game::spawn_apple(){
     apple_vec.push_back(new apple(apple_texture,rand()%145+50,rand()%35+5,3,false));
 }
 
+//SPAWN SPECIAL
 void game::spawn_special(){
 
-    if(rand()%10 == 0)
+    if(rand()%25 == 0)
         apple_vec.push_back(new apple(apple_sp_texture,rand()%145+50,rand()%35+5,1,true));
 }
 
@@ -337,7 +338,7 @@ void game::game_logic(){
 
                 if(player1->get_lives() == 0){
                     std::cout << "Game over!" << std::endl;
-                    //not_started = true;
+                    show_lose();
                     reset_game();
                     menu_stack.push(mainmenu1);
                 }
@@ -351,10 +352,34 @@ void game::game_logic(){
         spawn_apple();
         apple_counter = 0;
         counter_limit = rand()%45+26; //spawn apple at 30-70 frames
-    }else if(apple_counter == 20){
-        spawn_special();
+    }else if(apple_counter == 20 and player1->get_lives() < 2){
+            spawn_special();
     }
 
+}
+
+
+void game::show_lose(){
+
+    Uint32 start;
+    int tmp = 0;
+
+    while(tmp < 70){
+
+        start = SDL_GetTicks();
+
+        show_background();
+        show_score();
+
+        //SHOW PLAYER
+        if( (tmp >= 0 and tmp < 10) or (tmp >= 20 and tmp <= 30) or  (tmp >= 40 and tmp <= 50) or (tmp > 60 and tmp <= 70) )
+            player1->show_player(renderer);
+
+        SDL_RenderPresent(renderer);
+        regulate_fps(start);
+
+        tmp++;
+    }
 }
 
 //DRAW BACKGROUND
@@ -363,6 +388,7 @@ void game::show_background(){
     SDL_RenderCopy(renderer, background_texture, NULL, &background_rect);
 }
 
+//DRAW CURRENT SCORE
 void game::show_score(){
 
     std::string tmp = std::to_string(score);
@@ -427,6 +453,10 @@ void game::reset_game(){
 
     apple_vec.clear();
 
+    if(score > highscore)
+        highscore = score;
+
+    score = 0;
     apple_counter = 0;
     counter_limit = 45;
 

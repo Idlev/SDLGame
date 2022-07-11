@@ -102,6 +102,7 @@ class game
     int apple_counter;
     int counter_limit;
 
+    void show_lose();
     void reset_game();
     void game_logic();
     bool check_collision(SDL_Rect *rect1,SDL_Rect *rect2);

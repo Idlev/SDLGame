@@ -20,6 +20,9 @@ class music
         void raise_music();
         void raise_effect();
 
+        int get_music_vol();
+        int get_effect_vol();
+
         int level_music;
         int level_effect;
         float interval;
@@ -31,4 +34,3 @@ class music
 };
 
 #endif // MUSIC_H
-
