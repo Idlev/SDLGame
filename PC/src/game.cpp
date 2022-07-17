@@ -23,30 +23,26 @@ game::game()
 
     //SCORE
     score = 0;
+    highscore = 0;
 
-    //10 Numbers for both scores
+    //10 Numbers
     for(int i=0; i<10; i++){
 
         score_clips[i].x = i*SCORE_WIDTH;
         score_clips[i].y = 0;
         score_clips[i].w = SCORE_WIDTH;
         score_clips[i].h = SCORE_HEIGHT;
-
-        highscore_clips[i].x = i*HIGHSCORE_WIDTH;
-        highscore_clips[i].y = 0;
-        highscore_clips[i].w = HIGHSCORE_WIDTH;
-        highscore_clips[i].h = HIGHSCORE_HEIGHT;
     }
 
-    //4 Digits for score
-    for(int i=0; i<4; i++){
+    //3 Digits for score
+    for(int i=0; i<3; i++){
 
-        score_rects[i].x = 1+47 + i*5;
+        score_rects[i].x = 49 + i*(SCORE_WIDTH+1);
         score_rects[i].y = 0;
         score_rects[i].w = SCORE_WIDTH;
         score_rects[i].h = SCORE_HEIGHT;
 
-        score_rects[i].x = score_rects[i].x+1;
+        //score_rects[i].x = score_rects[i].x+1;
     }
 
     //SCALE
@@ -93,7 +89,7 @@ game::game()
 
     player1 = new player(player_texture,lives_texture);
     music1 = new music();
-    scoremenu1 = new scoremenu(scoremenu_texture,title_bg_texture);
+    scoremenu1 = new scoremenu(scoremenu_texture,title_bg_texture,highscore_texture);
     optionsmenu1 = new optionsmenu(options_texture,title_bg_texture,volume_texture,music1);
     mainmenu1 = new mainmenu(menu_texture,title_bg_texture,optionsmenu1,scoremenu1);
 }
@@ -132,6 +128,101 @@ SDL_Surface *game::load_image(const char *filename){
         std::cout << "Error loading image" << std::endl;
 
     return tmp;
+}
+
+//Read data from savefile
+bool game::read_data(const char *filename){
+
+    //open file
+    std::ifstream in(filename);
+
+    if(!in){
+        std::cout << "Unable to open file: " << filename << std::endl;
+        return false;
+    }
+
+    std::string tmp;
+    while(std::getline(in,tmp)){
+
+        //If line has text, save it
+        if(tmp.size() > 0)
+            data_vec.push_back(tmp);
+    }
+
+    //Close file
+    in.close();
+
+    return true;
+}
+
+void game::save_data(){
+
+    std::ifstream in("init.txt");
+    std::ofstream out("out.txt");
+
+    if( !in || !out){
+
+        std::cout << "Unable to open files!" << std::endl;
+        return;
+    }
+
+    std::string tmp;
+
+    while(std::getline(in,tmp)){
+
+        std::cout << "LINE IN: " << tmp << std::endl;
+
+        if(tmp[0] == 'S'){
+            tmp = "S" + std::to_string(highscore);
+        }
+
+        tmp += "\n";
+
+        std::cout << "LINE OUT: " << tmp << std::endl;
+
+        out << tmp;
+
+    }
+
+    in.close();
+    out.close();
+
+    remove("init.txt");
+    rename("out.txt","init.txt");
+
+
+}
+
+
+//Act on saved data
+//Highscore, music volume, effect volume
+void game::apply_data(){
+
+    std::string tmp;
+    //int val;
+
+    for(int i=0; i<data_vec.size(); i++){
+
+        tmp = data_vec[i];
+
+        if(tmp[0] == '#'){
+            continue;
+        }else if(tmp[0] == 'S'){
+            tmp.erase(0,1);
+            highscore = std::stoi(tmp);
+            scoremenu1->update_highscore(highscore);
+        }else if(tmp[0] == 'M'){
+            tmp.erase(0,1);
+            music1->set_music_vol(std::stoi(tmp));
+            std::cout << "MUSIC NOW: " << music1->get_music_vol() << std::endl;
+        }else if(tmp[0] == 'E'){
+            tmp.erase(0,1);
+            music1->set_effect_vol(std::stoi(tmp));
+            std::cout << "EFFECT NOW: " << music1->get_effect_vol() << std::endl;
+        }
+
+    }
+
 }
 
 //FPS REGULATOR
@@ -301,7 +392,7 @@ void game::game_logic(){
     //CHECK APPLE PLAYER COLLISION
     if(apple_vec.size() > 0){
         for(unsigned int i=0; i<apple_vec.size(); i++){
-            if(check_collision(player1->get_rect(),apple_vec[i]->get_rect())){
+            if(check_collision(player1->get_coll_rect(),apple_vec[i]->get_coll_rect())){
                 std::cout << "Caught an apple!" << std::endl;
 
                 if(apple_vec[i]->get_special()){
@@ -334,14 +425,15 @@ void game::game_logic(){
                     player1->lose_life();
                 }
 
-                apple_vec.erase(apple_vec.begin()+i);
-
                 if(player1->get_lives() == 0){
                     std::cout << "Game over!" << std::endl;
                     show_lose();
-                    reset_game();
                     menu_stack.push(mainmenu1);
+                    reset_game();
+                    break;
                 }
+
+                apple_vec.erase(apple_vec.begin()+i);
             }
         }
     }
@@ -358,7 +450,7 @@ void game::game_logic(){
 
 }
 
-
+//LOSING ANIMATION
 void game::show_lose(){
 
     Uint32 start;
@@ -371,9 +463,18 @@ void game::show_lose(){
         show_background();
         show_score();
 
-        //SHOW PLAYER
-        if( (tmp >= 0 and tmp < 10) or (tmp >= 20 and tmp <= 30) or  (tmp >= 40 and tmp <= 50) or (tmp > 60 and tmp <= 70) )
+        //SHOW PLAYER BLINK
+        if( (tmp >= 0 and tmp < 10) or (tmp >= 20 and tmp <= 30) or
+            (tmp >= 40 and tmp <= 50) or (tmp > 60 and tmp <= 70) ){
             player1->show_player(renderer);
+        }
+
+        //SHOW APPLES
+        if(apple_vec.size() > 0){
+            for(unsigned int i=0; i<apple_vec.size(); i++){
+                apple_vec[i]->show_apple(renderer);
+            }
+        }
 
         SDL_RenderPresent(renderer);
         regulate_fps(start);
@@ -453,8 +554,15 @@ void game::reset_game(){
 
     apple_vec.clear();
 
-    if(score > highscore)
+    if(score > highscore){
         highscore = score;
+        scoremenu1->update_highscore(highscore);
+
+        save_data();
+
+        std::cout << "HIGHSCORE: " << scoremenu1->get_highscore() << std::endl;
+        menu_stack.push(scoremenu1);
+    }
 
     score = 0;
     apple_counter = 0;
@@ -462,6 +570,7 @@ void game::reset_game(){
 
     player1->set_x_pos(60);
     player1->set_lives(1);
+
 }
 
 //Main game
@@ -469,6 +578,11 @@ void game::start(){
 
     Uint32 start;
     srand(time(0));
+
+    read_data("init.txt");
+
+    //apply saved data
+    apply_data();
 
     music1->play_music();
 

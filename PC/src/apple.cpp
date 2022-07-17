@@ -13,10 +13,17 @@ apple::apple(SDL_Texture *texture, float x_p, float y_p, int vel, bool sp)
     //animation frame
     frame = 0;
 
+    //Rect for image
     apple_rect.x = x_pos;
     apple_rect.y = y_pos;
     apple_rect.w = apple_size;
     apple_rect.h = apple_size;
+
+    //Rect for collision
+    coll_rect.x = x_pos+1;
+    coll_rect.y = y_pos+2;
+    coll_rect.w = 8;
+    coll_rect.h = 8;
 
     for(int i=0 ; i<2; i++){
         clips[i].x = i*apple_size;
@@ -37,6 +44,11 @@ apple::~apple()
 SDL_Rect *apple::get_rect(){
 
     return &apple_rect;
+}
+
+SDL_Rect *apple::get_coll_rect(){
+
+    return &coll_rect;
 }
 
 bool apple::get_special(){
@@ -78,7 +90,6 @@ void apple::show_apple(SDL_Renderer *renderer){
     else
         SDL_RenderCopy(renderer, apple_texture, &clips[0], &apple_rect);
 
-    frame++;
 }
 
 //AFTER SPWAN FALLS DOWN
@@ -90,7 +101,9 @@ void apple::move_apple(){
     else{
         y_pos += y_vel;
         apple_rect.y = y_pos;
+        coll_rect.y = y_pos+2;
     }
-}
 
+    frame++;
+}
 

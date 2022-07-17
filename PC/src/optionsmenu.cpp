@@ -45,6 +45,46 @@ optionsmenu::~optionsmenu()
     //dtor
 }
 
+void optionsmenu::save_data(){
+
+    std::ifstream in("init.txt");
+    std::ofstream out("out.txt");
+
+    if( !in || !out){
+
+        std::cout << "Unable to open files!" << std::endl;
+        return;
+    }
+
+    std::string tmp;
+
+    while(std::getline(in,tmp)){
+
+        std::cout << "LINE IN: " << tmp << std::endl;
+
+        if(tmp[0] == 'M'){
+            std::cout << "MUSIC_VOL: " << music1->get_music_vol() << std::endl;
+            tmp = "M" + std::to_string(music1->get_music_vol());
+        }else if(tmp[0] == 'E'){
+            std::cout << "EFFECT VOL: " << music1->get_effect_vol() << std::endl;
+            tmp = "E"+std::to_string(music1->get_effect_vol());
+        }
+
+        tmp += "\n";
+
+        std::cout << "LINE OUT: " << tmp << std::endl;
+
+        out << tmp;
+
+    }
+
+    in.close();
+    out.close();
+
+    remove("init.txt");
+    rename("out.txt","init.txt");
+}
+
 void optionsmenu::show_menu(SDL_Renderer *renderer){
 
     SDL_RenderCopy(renderer, bg_texture, NULL, &bg_rect);
@@ -70,6 +110,7 @@ int optionsmenu::action(std::stack<menu*> &stack_menu, int x, int y){
     //CHECK IF MOUSE COORDINARES INSIDE MENU BOXES
 
     if( check_cursor(x,y,rect_return) ){
+        save_data();
         pop_menu(stack_menu);
     }else if( check_cursor(x,y,rect_music_plus) ){
         music1->raise_music();

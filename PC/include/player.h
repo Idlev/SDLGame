@@ -15,6 +15,7 @@ class player
         void move_player_right(SDL_Renderer *renderer);
         void move_player_left(SDL_Renderer *renderer);
         SDL_Rect *get_rect();
+        SDL_Rect *get_coll_rect();
 
         float get_x_vel();
         void set_x_vel(float vel);
@@ -29,6 +30,7 @@ class player
     private:
 
         SDL_Texture *player_texture;
+        SDL_Rect coll_rect;
         SDL_Rect player_rect;
         SDL_Rect clips[10];
 
@@ -51,4 +53,3 @@ class player
 };
 
 #endif // PLAYER_H
-

@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <stack>
+#include <fstream>
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
@@ -27,7 +28,14 @@ class game
 
     private:
 
+    //MAIN GAME LOOP
     bool is_running;
+
+    //DATA READING
+    void apply_data();
+    bool read_data(const char* file);
+    void save_data();
+    std::vector<std::string> data_vec;
 
     //BUTTONS PRESSES
     bool key_left;
@@ -52,8 +60,8 @@ class game
     int highscore;
     SDL_Surface *score_image;
     SDL_Surface *highscore_image;
-    SDL_Rect score_rects[4];
-    SDL_Rect highscore_rects[4];
+    SDL_Rect score_rects[3];
+    SDL_Rect highscore_rects[3];
     SDL_Texture *score_texture;
     SDL_Texture *highscore_texture;
 
@@ -63,8 +71,6 @@ class game
     static const int SCORE_WIDTH = 4;
     static const int SCORE_HEIGHT = 5;
 
-    static const int HIGHSCORE_WIDTH = 12;
-    static const int HIGHSCORE_HEIGHT = 15;
 
     //FPS
     static const int FRAMES_PER_SECOND = 30;

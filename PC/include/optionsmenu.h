@@ -2,6 +2,7 @@
 #define OPTIONSMENU_H
 
 #include <iostream>
+#include <fstream>
 
 #include "SDL2/SDL.h"
 #include "music.h"
@@ -21,11 +22,16 @@ class optionsmenu : public menu
         static const int VOLUME_WIDTH = 2;
         static const int VOLUME_HEIGHT = 4;
 
+        //Save changes to save file
+        void save_data();
+
+        //Rects for drawing pluses and minuses
         SDL_Rect rect_effect_plus;
         SDL_Rect rect_effect_minus;
         SDL_Rect rect_music_plus;
         SDL_Rect rect_music_minus;
 
+        //Volume bars for intervals of 8 (0-128)
         SDL_Rect music_clips[16];
         SDL_Rect effect_clips[16];
 

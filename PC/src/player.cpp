@@ -31,6 +31,11 @@ player::player(SDL_Texture *player,SDL_Texture *extra)
     player_rect.w = player_width;
     player_rect.h = player_height;
 
+    coll_rect.x = x_pos;
+    coll_rect.y = y_pos;
+    coll_rect.w = 13; //Width of backpack
+    coll_rect.h = 18; //Height of backpack
+
     extra_size = 8;
 
     extra_rect1.x = 256-48-9;
@@ -108,6 +113,11 @@ SDL_Rect *player::get_rect(){
     return &player_rect;
 }
 
+SDL_Rect *player::get_coll_rect(){
+
+    return &coll_rect;
+}
+
 float player::get_x_vel(){
 
     return x_vel;
@@ -139,6 +149,7 @@ void player::move_player_left(SDL_Renderer *renderer){
         SDL_RenderCopy(renderer, player_texture, &clips[9], &player_rect);
 
     player_rect.x = x_pos;
+    coll_rect.x = x_pos+6;
 
     frame++;
     if(frame >= 16)
@@ -160,9 +171,9 @@ void player::move_player_right(SDL_Renderer *renderer){
         SDL_RenderCopy(renderer, player_texture, &clips[4], &player_rect);
 
     player_rect.x = x_pos;
+    coll_rect.x = x_pos;
 
     frame++;
     if(frame >= 16)
         frame = 0;
 }
-
